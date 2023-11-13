@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,6 +11,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { SingUpValidation } from "@/lib/validations";
@@ -19,15 +20,17 @@ import {
   useCrateAccountMutation,
   useSignInAccount,
 } from "@/lib/react-query/querisAndMutation";
+import { useUserContext } from "../../context/AuthContext";
 
 const SignUpForm = () => {
   const { toast } = useToast();
+  const { checkAuthUser } = useUserContext();
+  const navigate = useNavigate();
 
-  const { mutateAsync: createUserAccount, isLoading: isCreatingUser } =
+  const { mutateAsync: createUserAccount, isPending: isCreatingUser } =
     useCrateAccountMutation();
 
-  const { mutateAsync: signInAccount, isLoading: isSignIn } =
-    useSignInAccount();
+  const { mutateAsync: signInAccount } = useSignInAccount();
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof SingUpValidation>>({
@@ -45,8 +48,10 @@ const SignUpForm = () => {
     const newUser = await createUserAccount(values);
 
     if (!newUser) {
+      alert("SignUp failed. Please try again");
       return toast({
         title: "SignUp failed. Please try again",
+        description: "SignUp failed. Please try again",
       });
     }
 
@@ -56,7 +61,25 @@ const SignUpForm = () => {
     });
 
     if (!session) {
-      return toast({ title: "SignIn failed. Please try again" });
+      alert("SignIn failed. Please try again");
+      return toast({
+        title: "SignIn failed. Please try again",
+        description: "SignIn failed. Please try again",
+      });
+    }
+
+    const isLoggedIn = await checkAuthUser();
+
+    if (isLoggedIn) {
+      form.reset();
+
+      navigate("/");
+    } else {
+      alert("Sign in failed. Please try again");
+      return toast({
+        title: "Sign in failed. Please try again",
+        description: "Sign in failed. Please try again",
+      });
     }
   }
 
@@ -148,6 +171,7 @@ const SignUpForm = () => {
                     className="shad-input"
                   />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
