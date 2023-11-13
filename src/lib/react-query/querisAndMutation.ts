@@ -1,12 +1,14 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
+  createPost,
   createUserAccount,
   signInAccount,
   signOutAccount,
 } from "../appwrite/api";
-import { INewUser } from "@/types";
+import { INewPost, INewUser } from "@/types";
 import { account, appwriteConfig, databases } from "../appwrite/config";
 import { Query } from "appwrite";
+import { QUERY_KEYS } from "./quryKeys";
 
 export const useCrateAccountMutation = () => {
   return useMutation({
@@ -46,4 +48,17 @@ export const getCurrentUser = async () => {
     console.log(error);
     return false;
   }
+};
+
+export const useCreatePost = () => {
+  const quryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (post: INewPost) => createPost(post),
+    onSuccess: () => {
+      quryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_RECENT_POSTS],
+      });
+    },
+  });
 };
