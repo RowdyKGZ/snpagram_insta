@@ -55,3 +55,8 @@ export type INewUser = {
   username: string;
   password: string;
 };
+
+export type LikePostType = {
+  postId: string;
+  likesArray: string[];
+};
