@@ -19,6 +19,7 @@ import { PostValidation } from "@/lib/validations";
 import { useUserContext } from "@/context/AuthContext";
 import { useToast } from "../ui/use-toast";
 import { useNavigate } from "react-router-dom";
+import { useCreatePost } from "@/lib/react-query/querisAndMutation";
 
 type PostFormProps = {
   post?: Models.Document;
@@ -27,8 +28,8 @@ type PostFormProps = {
 const PostForm = ({ post }: PostFormProps) => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  // const { mytateAsync: createPost, isPending: isLoadingCreate } =
-  //   useCreatePost();
+  const { mutateAsync: createPost, isPending: isLoadingCreate } =
+    useCreatePost();
 
   const { user } = useUserContext();
 
@@ -43,11 +44,10 @@ const PostForm = ({ post }: PostFormProps) => {
   });
 
   async function onSubmit(values: z.infer<typeof PostValidation>) {
-    // const newPost = await createPost({
-    //   ...values,
-    //   userId: user.id,
-    // });
-    const newPost = false;
+    const newPost = await createPost({
+      ...values,
+      userId: user.id,
+    });
 
     if (!newPost) {
       alert("Please Try Again ");
