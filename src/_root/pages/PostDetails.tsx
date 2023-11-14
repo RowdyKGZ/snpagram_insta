@@ -17,7 +17,7 @@ const PostDetails = () => {
   const navigate = useNavigate();
 
   const handleDeletePost = () => {
-    deletePost({ postId: post?.$id, imageId: post?.imageId });
+    if (post) deletePost({ postId: post.$id, imageId: post?.imageId });
 
     navigate("/");
   };
