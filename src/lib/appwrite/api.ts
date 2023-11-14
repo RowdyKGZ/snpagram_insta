@@ -2,6 +2,7 @@ import { ID, Query } from "appwrite";
 
 import { INewPost, INewUser, IUpdatePost } from "@/types";
 import { account, appwriteConfig, avatars, databases, storage } from "./config";
+import { useQuery } from "@tanstack/react-query";
 
 type UserType = {
   accountId: string;
@@ -303,18 +304,12 @@ export async function getPostId(poostId: string) {
   }
 }
 
-export async function getInfinitePosts({ pageParam }: { pageParam: number }) {
-  const queries: any[] = [Query.orderDesc("updateAt"), Query.limit(10)];
-
-  if (pageParam) {
-    queries.push(Query.cursorAfter.toString());
-  }
-
+export async function searchPosts(searchTerm: string) {
   try {
     const posts = await databases.listDocuments(
       appwriteConfig.databaseId,
       appwriteConfig.postCollectionId,
-      queries
+      [Query.search("caption", searchTerm)]
     );
 
     if (!posts) throw Error;
@@ -325,12 +320,18 @@ export async function getInfinitePosts({ pageParam }: { pageParam: number }) {
   }
 }
 
-export async function serachPosts(serachTerm: string) {
+export async function getInfinitePosts({ pageParam }: { pageParam: number }) {
+  const queries: any[] = [Query.orderDesc("$updatedAt"), Query.limit(9)];
+
+  if (pageParam) {
+    queries.push(Query.cursorAfter(pageParam.toString()));
+  }
+
   try {
     const posts = await databases.listDocuments(
       appwriteConfig.databaseId,
       appwriteConfig.postCollectionId,
-      [Query.search("caption", serachTerm)]
+      queries
     );
 
     if (!posts) throw Error;

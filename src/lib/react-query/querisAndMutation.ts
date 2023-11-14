@@ -15,6 +15,7 @@ import {
   getRecentPosts,
   likePost,
   savePost,
+  searchPosts,
   signInAccount,
   signOutAccount,
   updatePost,
@@ -205,4 +206,10 @@ export const useGetPosts = () => {
   });
 };
 
-export const;
+export const useSearchPosts = (serachTerm: string) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.SEARCH_POSTS, serachTerm],
+    queryFn: () => searchPosts(serachTerm),
+    enabled: !!serachTerm,
+  });
+};
