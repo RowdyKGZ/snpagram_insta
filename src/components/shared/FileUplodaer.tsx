@@ -9,7 +9,7 @@ type FileUplodaerPropsType = {
 
 const FileUplodaer = ({ fieldChange, mediaUrl }: FileUplodaerPropsType) => {
   const [file, setFile] = useState<File[]>([]);
-  const [fileUrl, setFileUrl] = useState("");
+  const [fileUrl, setFileUrl] = useState(mediaUrl);
 
   const onDrop = useCallback(
     (acceptedFiles: FileWithPath[]) => {
@@ -23,7 +23,7 @@ const FileUplodaer = ({ fieldChange, mediaUrl }: FileUplodaerPropsType) => {
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     accept: {
-      "image/*": [".png", ".jpg", ".jpeg", "svg"],
+      "image/*": [".jpeg", ".jpg", ".png", ".svg"],
     },
   });
 
@@ -49,9 +49,7 @@ const FileUplodaer = ({ fieldChange, mediaUrl }: FileUplodaerPropsType) => {
             height={77}
           />
 
-          <h3 className="base-medium text-light-2 mb-2 mt-6">
-            Drag Phone Here
-          </h3>
+          <h3 className="base-medium text-light-2 mb-2 mt-6">Drag Foto Here</h3>
           <p className="text-light-4 small-regular mb-6">SVG, PNG, JPG</p>
           <Button className="shad-button_dark_4">Select from computer</Button>
         </div>

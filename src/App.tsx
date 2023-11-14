@@ -16,6 +16,7 @@ import AuthLayout from "./_auth/AuthLayout";
 import RootLayout from "./_root/RootLayout";
 
 import "./global.css";
+import EditPost from "./_root/pages/EditPost";
 
 const App = () => {
   return (
@@ -37,6 +38,7 @@ const App = () => {
           <Route path="/posts/:id" element={<PostDetails />} />
           <Route path="/profile/:id/*" element={<Profile />} />
           <Route path="/update-profile/:id" element={<UpdateProfile />} />
+          <Route path="/update/post/:id" element={<EditPost />} />
         </Route>
       </Routes>
     </main>
